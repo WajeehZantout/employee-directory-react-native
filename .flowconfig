@@ -63,5 +63,5 @@ suppress_comment=\\(.\\|\n\\)*\\$FlowIssue\\((\\(<VERSION>\\)? *\\(site=[a-z,_]*
 suppress_comment=\\(.\\|\n\\)*\\$FlowFixedInNextDeploy
 suppress_comment=\\(.\\|\n\\)*\\$FlowExpectedError
 
-[version]
-^0.75.0
+[untyped]
+.*/node_modules/react-native/Libraries/react-native/react-native-implementation.js
