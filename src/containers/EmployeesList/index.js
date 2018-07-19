@@ -39,6 +39,7 @@ class EmployeesList extends Component<Props, State> {
       client
         .query({
           query: EmployeesQuery,
+          fetchPolicy: 'network-only',
         })
         .then((res) => {
           this.setState({ loading: false });
