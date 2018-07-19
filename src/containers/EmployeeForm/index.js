@@ -8,6 +8,7 @@ import {
 import { withApollo } from 'react-apollo';
 
 import AddEmployeeMutation from '../../graphql/mutations/AddEmployee';
+import UpdateEmployeeInfoMutation from '../../graphql/mutations/UpdateEmployeeInfo';
 import styles from './styles';
 import { REQUIRED_FIELD, CHECK_INTERNET_CONNECTION } from '../../constants';
 
@@ -43,6 +44,54 @@ class EmployeeForm extends Component<Props, State> {
       showValidationMessage: false,
       loading: false,
     };
+  }
+
+  /* eslint consistent-return: 0 */
+  editEmployeeInfo() {
+    const {
+      firstName, lastName, jobTitle, phoneNumber,
+    } = this.state;
+    const { navigation, client } = this.props;
+    const {
+      goBack,
+      state: {
+        params: {
+          refreshEmployeesList,
+          employee: { id },
+        },
+      },
+    } = navigation;
+
+    if (!firstName || !lastName || !jobTitle || !phoneNumber) {
+      return this.setState({ showValidationMessage: true });
+    }
+
+    this.setState({ loading: true }, () => {
+      client
+        .mutate({
+          mutation: UpdateEmployeeInfoMutation,
+          variables: {
+            id,
+            firstName,
+            lastName,
+            jobTitle,
+            phoneNumber,
+          },
+        })
+        .then((res) => {
+          this.setState({ loading: false });
+          if (res) {
+            Keyboard.dismiss();
+            refreshEmployeesList();
+            goBack();
+          }
+        })
+        .catch(() => {
+          this.setState({ loading: false });
+          /* eslint no-alert: 0 */
+          alert(CHECK_INTERNET_CONNECTION);
+        });
+    });
   }
 
   /* eslint consistent-return: 0 */
@@ -128,7 +177,7 @@ class EmployeeForm extends Component<Props, State> {
         loading={loading}
         buttonStyle={styles.button}
         title={id ? 'Save' : 'Add'}
-        onPress={() => (id ? {} : this.addEmployee())}
+        onPress={() => (id ? this.editEmployeeInfo() : this.addEmployee())}
       />
     );
   }
