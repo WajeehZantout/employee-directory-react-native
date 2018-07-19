@@ -11,9 +11,21 @@ import { StackNavigator } from 'react-navigation';
 import EmployeesList from './src/containers/EmployeesList';
 import EmployeeForm from './src/containers/EmployeeForm';
 
-const Client = new ApolloClient({
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  },
+  query: {
+    fetchPolicy: 'network-only',
+    errorPolicy: 'all',
+  },
+};
+
+const client = new ApolloClient({
   link: new HttpLink({ uri: '<SERVER_URL>' }),
   cache: new InMemoryCache(),
+  defaultOptions,
 });
 
 const MainNavigator = StackNavigator({
@@ -22,7 +34,7 @@ const MainNavigator = StackNavigator({
 });
 
 const App = () => (
-  <ApolloProvider client={Client}>
+  <ApolloProvider client={client}>
     <View style={{ flex: 1 }}>
       <MainNavigator />
     </View>

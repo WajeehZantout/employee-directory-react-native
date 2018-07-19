@@ -16,6 +16,7 @@ const AddButton = ({ navigation }: Props) => (
     onPress={() => navigation.navigate('employeeForm', {
       title: 'Add Employee',
       employee: {},
+      refreshEmployeesList: () => navigation.state.params.refreshEmployeesList(),
     })
     }
   >

@@ -38,6 +38,13 @@ class EmployeesList extends Component<Props, State> {
     employees: [],
   };
 
+  componentWillMount() {
+    const { navigation } = this.props;
+    navigation.setParams({
+      refreshEmployeesList: this.getEmployees.bind(this),
+    });
+  }
+
   componentDidMount() {
     this.getEmployees();
   }
@@ -48,7 +55,6 @@ class EmployeesList extends Component<Props, State> {
       client
         .query({
           query: EmployeesQuery,
-          fetchPolicy: 'network-only',
         })
         .then((res) => {
           this.setState({ loading: false });
@@ -103,6 +109,7 @@ class EmployeesList extends Component<Props, State> {
     navigation.navigate('employeeForm', {
       title: 'Edit Employee',
       employee,
+      refreshEmployeesList: () => this.getEmployees(),
     });
   }
 
