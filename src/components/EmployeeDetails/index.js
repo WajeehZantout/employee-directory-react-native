@@ -14,7 +14,7 @@ type Props = {
   onPress: Function,
 };
 
-const EmployeeItem = ({
+const EmployeeDetails = ({
   employee: { firstName, lastName, jobTitle },
   onRemove,
   onPress,
@@ -55,4 +55,4 @@ const EmployeeItem = ({
   );
 };
 
-export default EmployeeItem;
+export default EmployeeDetails;

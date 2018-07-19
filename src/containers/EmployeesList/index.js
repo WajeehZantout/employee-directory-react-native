@@ -6,7 +6,8 @@ import {
 } from 'react-native';
 import { withApollo } from 'react-apollo';
 
-import EmployeeItem from '../../components/EmployeeItem';
+import EmployeeDetails from '../../components/EmployeeDetails';
+import AddButton from '../../components/AddButton';
 import EmployeesQuery from '../../graphql/queries/Employees';
 import RemoveEmployeeMutation from '../../graphql/mutations/RemoveEmployee';
 import styles from './styles';
@@ -18,6 +19,7 @@ import {
 
 type Props = {
   client: Object,
+  navigation: Object,
 };
 
 type State = {
@@ -26,8 +28,9 @@ type State = {
 };
 
 class EmployeesList extends Component<Props, State> {
-  static navigationOptions = () => ({
+  static navigationOptions = ({ navigation }) => ({
     title: 'List of Employees',
+    headerRight: <AddButton navigation={navigation} />,
   });
 
   state = {
@@ -53,10 +56,12 @@ class EmployeesList extends Component<Props, State> {
             if (res.data.employees) {
               this.setState({ employees: res.data.employees });
             }
-          } else {
-            /* eslint no-alert: 0 */
-            alert(CHECK_INTERNET_CONNECTION);
           }
+        })
+        .catch(() => {
+          this.setState({ loading: false });
+          /* eslint no-alert: 0 */
+          alert(CHECK_INTERNET_CONNECTION);
         });
     });
   }
@@ -80,10 +85,12 @@ class EmployeesList extends Component<Props, State> {
                   if (res.data.removeEmployee) {
                     this.getEmployees();
                   }
-                } else {
-                  /* eslint no-alert: 0 */
-                  alert(CHECK_INTERNET_CONNECTION);
                 }
+              })
+              .catch(() => {
+                this.setState({ loading: false });
+                /* eslint no-alert: 0 */
+                alert(CHECK_INTERNET_CONNECTION);
               });
           });
         },
@@ -91,13 +98,21 @@ class EmployeesList extends Component<Props, State> {
     ]);
   }
 
+  goToEmployeeForm(employee) {
+    const { navigation } = this.props;
+    navigation.navigate('employeeForm', {
+      title: 'Edit Employee',
+      employee,
+    });
+  }
+
   renderRow(row) {
     const { item } = row;
     return (
-      <EmployeeItem
+      <EmployeeDetails
         employee={item}
         onRemove={() => this.removeEmployee(item.id)}
-        onPress={() => {}}
+        onPress={() => this.goToEmployeeForm(item)}
       />
     );
   }

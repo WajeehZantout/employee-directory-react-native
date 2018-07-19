@@ -9,6 +9,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { StackNavigator } from 'react-navigation';
 
 import EmployeesList from './src/containers/EmployeesList';
+import EmployeeForm from './src/containers/EmployeeForm';
 
 const Client = new ApolloClient({
   link: new HttpLink({ uri: '<SERVER_URL>' }),
@@ -17,6 +18,7 @@ const Client = new ApolloClient({
 
 const MainNavigator = StackNavigator({
   employeesList: { screen: EmployeesList },
+  employeeForm: { screen: EmployeeForm },
 });
 
 const App = () => (
