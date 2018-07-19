@@ -2,14 +2,19 @@
 
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, RefreshControl,
+  View, Text, FlatList, RefreshControl, Alert,
 } from 'react-native';
 import { withApollo } from 'react-apollo';
 
 import EmployeeItem from '../../components/EmployeeItem';
 import EmployeesQuery from '../../graphql/queries/Employees';
+import RemoveEmployeeMutation from '../../graphql/mutations/RemoveEmployee';
 import styles from './styles';
-import { CHECK_INTERNET_CONNECTION, NO_EMPLOYEES } from '../../constants';
+import {
+  CHECK_INTERNET_CONNECTION,
+  NO_EMPLOYEES,
+  EMPLOYEE_REMOVAL_CONFIRMATION,
+} from '../../constants';
 
 type Props = {
   client: Object,
@@ -56,9 +61,45 @@ class EmployeesList extends Component<Props, State> {
     });
   }
 
-  static renderRow(row) {
+  removeEmployee(id) {
+    const { client } = this.props;
+    Alert.alert('Alert', EMPLOYEE_REMOVAL_CONFIRMATION, [
+      { text: 'NO', onPress: () => {}, style: 'cancel' },
+      {
+        text: 'Yes',
+        onPress: () => {
+          this.setState({ loading: true }, () => {
+            client
+              .mutate({
+                mutation: RemoveEmployeeMutation,
+                variables: { id },
+              })
+              .then((res) => {
+                this.setState({ loading: false });
+                if (res) {
+                  if (res.data.removeEmployee) {
+                    this.getEmployees();
+                  }
+                } else {
+                  /* eslint no-alert: 0 */
+                  alert(CHECK_INTERNET_CONNECTION);
+                }
+              });
+          });
+        },
+      },
+    ]);
+  }
+
+  renderRow(row) {
     const { item } = row;
-    return <EmployeeItem employee={item} onRemove={() => {}} onPress={() => {}} />;
+    return (
+      <EmployeeItem
+        employee={item}
+        onRemove={() => this.removeEmployee(item.id)}
+        onPress={() => {}}
+      />
+    );
   }
 
   renderNoData() {
@@ -82,7 +123,7 @@ class EmployeesList extends Component<Props, State> {
         }
         ListEmptyComponent={() => this.renderNoData()}
         data={employees}
-        renderItem={row => EmployeesList.renderRow(row)}
+        renderItem={row => this.renderRow(row)}
         keyExtractor={item => item.id}
       />
     );
