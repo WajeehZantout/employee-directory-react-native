@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { withApollo } from 'react-apollo';
 
+import EmployeeItem from '../../components/EmployeeItem';
 import EmployeesQuery from '../../graphql/queries/Employees';
 import styles from './styles';
 import { CHECK_INTERNET_CONNECTION, NO_EMPLOYEES } from '../../constants';
@@ -56,14 +57,8 @@ class EmployeesList extends Component<Props, State> {
   }
 
   static renderRow(row) {
-    const { item, index } = row;
-    return (
-      <View>
-        <Text>
-          {`${index + 1}. ${item.firstName} ${item.lastName}`}
-        </Text>
-      </View>
-    );
+    const { item } = row;
+    return <EmployeeItem employee={item} onRemove={() => {}} onPress={() => {}} />;
   }
 
   renderNoData() {
