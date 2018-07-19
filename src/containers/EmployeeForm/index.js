@@ -1,12 +1,11 @@
 // @flow
 
 import React, { Component } from 'react';
-import { View, ScrollView, Keyboard } from 'react-native';
-import {
-  FormLabel, FormInput, Button, FormValidationMessage,
-} from 'react-native-elements';
+import { ScrollView, Keyboard } from 'react-native';
+import { Button, FormValidationMessage } from 'react-native-elements';
 import { withApollo } from 'react-apollo';
 
+import FormField from '../../components/FormField';
 import AddEmployeeMutation from '../../graphql/mutations/AddEmployee';
 import UpdateEmployeeInfoMutation from '../../graphql/mutations/UpdateEmployeeInfo';
 import styles from './styles';
@@ -138,19 +137,16 @@ class EmployeeForm extends Component<Props, State> {
     });
   }
 
-  renderField(label: string, key: string, value: string, type: string) {
+  renderField(label: string, name: string, value: string, type: string) {
     return (
-      <View>
-        <FormLabel>
-          {label}
-        </FormLabel>
-        <FormInput
-          keyboardType={type}
-          onChangeText={text => this.setState({ [key]: text })}
-          value={value}
-        />
+      <FormField
+        label={label}
+        value={value}
+        type={type}
+        onChangeText={text => this.setState({ [name]: text })}
+      >
         {this.renderValidationMessage(value)}
-      </View>
+      </FormField>
     );
   }
 
