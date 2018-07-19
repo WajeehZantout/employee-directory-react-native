@@ -11,7 +11,7 @@ import { StackNavigator } from 'react-navigation';
 import EmployeesList from './src/containers/EmployeesList';
 
 const Client = new ApolloClient({
-  link: new HttpLink({ uri: 'http://10.9.115.231:4000' }),
+  link: new HttpLink({ uri: '<SERVER_URL>' }),
   cache: new InMemoryCache(),
 });
 
