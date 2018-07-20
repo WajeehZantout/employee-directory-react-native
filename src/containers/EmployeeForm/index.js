@@ -79,7 +79,7 @@ class EmployeeForm extends Component<Props, State> {
         })
         .then((res) => {
           this.setState({ loading: false });
-          if (res) {
+          if (res.data.updateEmployeeInfo) {
             Keyboard.dismiss();
             refreshEmployeesList();
             goBack();
@@ -93,7 +93,6 @@ class EmployeeForm extends Component<Props, State> {
     });
   }
 
-  /* eslint consistent-return: 0 */
   addEmployee() {
     const {
       firstName, lastName, jobTitle, phoneNumber,
@@ -123,7 +122,7 @@ class EmployeeForm extends Component<Props, State> {
         })
         .then((res) => {
           this.setState({ loading: false });
-          if (res) {
+          if (res.data.addEmployee) {
             Keyboard.dismiss();
             refreshEmployeesList();
             goBack();

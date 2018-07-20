@@ -87,10 +87,8 @@ class EmployeesList extends Component<Props, State> {
               })
               .then((res) => {
                 this.setState({ loading: false });
-                if (res) {
-                  if (res.data.removeEmployee) {
-                    this.getEmployees();
-                  }
+                if (res.data.removeEmployee) {
+                  this.getEmployees();
                 }
               })
               .catch(() => {
