@@ -17,7 +17,11 @@ cd employee-directory-react-native
 yarn install
 ```
 
-### 2. Run the app
+### 2. Install React Native dependencies
+
+If you already have React Native installed, you can skip this step. Otherwise, follow the `Installing dependencies` instructions found in the `Building Projects with Native Code` section of this [Getting Started tutorial](https://facebook.github.io/react-native/docs/getting-started.html).
+
+### 3. Run the app
 
 Before running the app, make sure the [server](https://github.com/WajeehZantout/employee-directory-node) is running. After that, replace `<SERVER_URL>` in [App.js](https://github.com/WajeehZantout/employee-directory-react-native/blob/master/App.js) with the server's url.
 
