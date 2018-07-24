@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export default gql`
   query EmployeesQuery {
-    employees {
+    employees(orderBy: firstName_ASC) {
       id
       firstName
       lastName
