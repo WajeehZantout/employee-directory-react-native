@@ -15,6 +15,7 @@ import {
   CHECK_INTERNET_CONNECTION,
   NO_EMPLOYEES,
   EMPLOYEE_REMOVAL_CONFIRMATION,
+  SUCCESS,
 } from '../../constants';
 
 type Props = {
@@ -27,6 +28,7 @@ type State = {
   employees: Array<Object>,
 };
 
+/* eslint no-alert: 0 */
 class EmployeesList extends Component<Props, State> {
   static navigationOptions = ({ navigation }) => ({
     title: 'List of Employees',
@@ -66,7 +68,6 @@ class EmployeesList extends Component<Props, State> {
         })
         .catch(() => {
           this.setState({ loading: false });
-          /* eslint no-alert: 0 */
           alert(CHECK_INTERNET_CONNECTION);
         });
     });
@@ -88,12 +89,12 @@ class EmployeesList extends Component<Props, State> {
               .then((res) => {
                 this.setState({ loading: false });
                 if (res.data.removeEmployee) {
+                  alert(SUCCESS);
                   this.getEmployees();
                 }
               })
               .catch(() => {
                 this.setState({ loading: false });
-                /* eslint no-alert: 0 */
                 alert(CHECK_INTERNET_CONNECTION);
               });
           });

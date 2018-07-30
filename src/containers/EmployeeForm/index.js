@@ -9,7 +9,7 @@ import FormField from '../../components/FormField';
 import AddEmployeeMutation from '../../graphql/mutations/AddEmployee';
 import UpdateEmployeeInfoMutation from '../../graphql/mutations/UpdateEmployeeInfo';
 import styles from './styles';
-import { REQUIRED_FIELD, CHECK_INTERNET_CONNECTION } from '../../constants';
+import { REQUIRED_FIELD, CHECK_INTERNET_CONNECTION, SUCCESS } from '../../constants';
 
 type Props = {
   navigation: Object,
@@ -25,6 +25,8 @@ type State = {
   phoneNumber: string,
 };
 
+/* eslint consistent-return: 0 */
+/* eslint no-alert: 0 */
 class EmployeeForm extends Component<Props, State> {
   static navigationOptions = ({ navigation }: Props) => ({
     title: navigation.state.params.title,
@@ -45,7 +47,6 @@ class EmployeeForm extends Component<Props, State> {
     };
   }
 
-  /* eslint consistent-return: 0 */
   editEmployeeInfo() {
     const {
       firstName, lastName, jobTitle, phoneNumber,
@@ -82,12 +83,12 @@ class EmployeeForm extends Component<Props, State> {
           if (res.data.updateEmployeeInfo) {
             Keyboard.dismiss();
             refreshEmployeesList();
+            alert(SUCCESS);
             goBack();
           }
         })
         .catch(() => {
           this.setState({ loading: false });
-          /* eslint no-alert: 0 */
           alert(CHECK_INTERNET_CONNECTION);
         });
     });
@@ -125,12 +126,12 @@ class EmployeeForm extends Component<Props, State> {
           if (res.data.addEmployee) {
             Keyboard.dismiss();
             refreshEmployeesList();
+            alert(SUCCESS);
             goBack();
           }
         })
         .catch(() => {
           this.setState({ loading: false });
-          /* eslint no-alert: 0 */
           alert(CHECK_INTERNET_CONNECTION);
         });
     });
