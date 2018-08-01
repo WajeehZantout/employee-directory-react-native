@@ -25,7 +25,6 @@ type State = {
   phoneNumber: string,
 };
 
-/* eslint consistent-return: 0 */
 /* eslint no-alert: 0 */
 class EmployeeForm extends Component<Props, State> {
   static navigationOptions = ({ navigation }: Props) => ({
@@ -47,58 +46,8 @@ class EmployeeForm extends Component<Props, State> {
     };
   }
 
-  editEmployeeInfo() {
-    const {
-      firstName, lastName, jobTitle, phoneNumber,
-    } = this.state;
-    const { navigation, client } = this.props;
-    const {
-      goBack,
-      state: {
-        params: {
-          refreshEmployeesList,
-          employee: { id },
-        },
-      },
-    } = navigation;
-
-    if (!firstName || !lastName || !jobTitle || !phoneNumber) {
-      return this.setState({ showValidationMessage: true });
-    }
-
-    this.setState({ loading: true }, () => {
-      client
-        .mutate({
-          mutation: UpdateEmployeeInfoMutation,
-          variables: {
-            id,
-            firstName,
-            lastName,
-            jobTitle,
-            phoneNumber,
-          },
-        })
-        .then((res) => {
-          this.setState({ loading: false });
-          if (res.data.updateEmployeeInfo) {
-            Keyboard.dismiss();
-            refreshEmployeesList();
-            alert(SUCCESS);
-            goBack();
-          }
-        })
-        .catch(() => {
-          this.setState({ loading: false });
-          alert(CHECK_INTERNET_CONNECTION);
-        });
-    });
-  }
-
-  addEmployee() {
-    const {
-      firstName, lastName, jobTitle, phoneNumber,
-    } = this.state;
-    const { navigation, client } = this.props;
+  onSuccess() {
+    const { navigation } = this.props;
     const {
       goBack,
       state: {
@@ -106,35 +55,94 @@ class EmployeeForm extends Component<Props, State> {
       },
     } = navigation;
 
+    Keyboard.dismiss();
+    refreshEmployeesList();
+    alert(SUCCESS);
+    goBack();
+  }
+
+  onError() {
+    this.setState({ loading: false });
+    alert(CHECK_INTERNET_CONNECTION);
+  }
+
+  submitForm() {
+    const {
+      firstName, lastName, jobTitle, phoneNumber,
+    } = this.state;
+    const { navigation } = this.props;
+    const { id } = navigation.state.params.employee;
+
     if (!firstName || !lastName || !jobTitle || !phoneNumber) {
       return this.setState({ showValidationMessage: true });
     }
 
-    this.setState({ loading: true }, () => {
-      client
-        .mutate({
-          mutation: AddEmployeeMutation,
-          variables: {
-            firstName,
-            lastName,
-            jobTitle,
-            phoneNumber,
-          },
-        })
-        .then((res) => {
-          this.setState({ loading: false });
-          if (res.data.addEmployee) {
-            Keyboard.dismiss();
-            refreshEmployeesList();
-            alert(SUCCESS);
-            goBack();
-          }
-        })
-        .catch(() => {
-          this.setState({ loading: false });
-          alert(CHECK_INTERNET_CONNECTION);
-        });
-    });
+    return this.setState(
+      { loading: true },
+      () => (id ? this.editEmployeeInfo() : this.addEmployee()),
+    );
+  }
+
+  editEmployeeInfo() {
+    const {
+      firstName, lastName, jobTitle, phoneNumber,
+    } = this.state;
+    const { navigation, client } = this.props;
+    const {
+      state: {
+        params: {
+          employee: { id },
+        },
+      },
+    } = navigation;
+
+    client
+      .mutate({
+        mutation: UpdateEmployeeInfoMutation,
+        variables: {
+          id,
+          firstName,
+          lastName,
+          jobTitle,
+          phoneNumber,
+        },
+      })
+      .then((res) => {
+        this.setState({ loading: false });
+        if (res.data.updateEmployeeInfo) {
+          this.onSuccess();
+        }
+      })
+      .catch(() => {
+        this.onError();
+      });
+  }
+
+  addEmployee() {
+    const {
+      firstName, lastName, jobTitle, phoneNumber,
+    } = this.state;
+    const { client } = this.props;
+
+    client
+      .mutate({
+        mutation: AddEmployeeMutation,
+        variables: {
+          firstName,
+          lastName,
+          jobTitle,
+          phoneNumber,
+        },
+      })
+      .then((res) => {
+        this.setState({ loading: false });
+        if (res.data.addEmployee) {
+          this.onSuccess();
+        }
+      })
+      .catch(() => {
+        this.onError();
+      });
   }
 
   renderField(label: string, name: string, value: string, type: string) {
@@ -173,7 +181,7 @@ class EmployeeForm extends Component<Props, State> {
         loading={loading}
         buttonStyle={styles.button}
         title={id ? 'Save' : 'Add'}
-        onPress={() => (id ? this.editEmployeeInfo() : this.addEmployee())}
+        onPress={() => this.submitForm()}
       />
     );
   }
